@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:task_manager_project_using_rest_api/ui/screens/login_screen.dart';
+import 'package:task_manager_project_using_rest_api/ui/screens/auth/login_screen.dart';
 import 'package:task_manager_project_using_rest_api/ui/utility/assets_utility.dart';
 import 'package:task_manager_project_using_rest_api/widgets/screen_background.dart';
 

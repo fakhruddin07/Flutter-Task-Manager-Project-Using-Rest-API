@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager_project_using_rest_api/ui/screens/email_verification_screen.dart';
-import '../../widgets/screen_background.dart';
+import 'package:task_manager_project_using_rest_api/ui/screens/auth/email_verification_screen.dart';
+import '../../../widgets/screen_background.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});

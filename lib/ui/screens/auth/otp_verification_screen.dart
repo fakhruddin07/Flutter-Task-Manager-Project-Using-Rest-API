@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:task_manager_project_using_rest_api/ui/screens/auth/reset_password.dart';
 
+import '../../../widgets/screen_background.dart';
 import 'login_screen.dart';
-import '../../widgets/screen_background.dart';
 
-class ResetPassword extends StatelessWidget {
-  const ResetPassword({super.key});
+class OtpVerification extends StatelessWidget {
+  const OtpVerification({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,32 +19,44 @@ class ResetPassword extends StatelessWidget {
             children: [
               const SizedBox(height: 65),
               Text(
-                "Set Password",
+                "PIN Verification",
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 5),
               Text(
-                "Minimum length password 8 character with letter and number combination",
+                "A 6 digit verification pin will send to your email address",
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium
                     ?.copyWith(color: Colors.grey),
               ),
               const SizedBox(height: 24),
-              const TextField(
-                keyboardType: TextInputType.emailAddress,
-                obscureText: true,
-                decoration: InputDecoration(
-                  hintText: "Password",
+              PinCodeTextField(
+                length: 6,
+                obscureText: false,
+                animationType: AnimationType.fade,
+                keyboardType: TextInputType.number,
+                pinTheme: PinTheme(
+                  shape: PinCodeFieldShape.box,
+                  borderRadius: BorderRadius.circular(5),
+                  fieldHeight: 50,
+                  fieldWidth: 40,
+                  inactiveFillColor: Colors.white,
+                  inactiveColor: Colors.red,
+                  activeColor: Colors.white,
+                  activeFillColor: Colors.white,
+                  selectedColor: Colors.green,
+                  selectedFillColor: Colors.white,
                 ),
-              ),
-              const SizedBox(height: 16),
-              const TextField(
-                keyboardType: TextInputType.emailAddress,
-                obscureText: true,
-                decoration: InputDecoration(
-                  hintText: "Confirm Password",
-                ),
+                animationDuration: const Duration(milliseconds: 300),
+                enableActiveFill: true,
+                cursorColor: Colors.green,
+                onCompleted: (v) {},
+                onChanged: (value) {},
+                beforeTextPaste: (text) {
+                  return true;
+                },
+                appContext: context,
               ),
               const SizedBox(height: 16),
               SizedBox(
@@ -52,12 +66,12 @@ class ResetPassword extends StatelessWidget {
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const LoginScreen(),
+                        builder: (context) => const ResetPassword(),
                       ),
                       (route) => false,
                     );
                   },
-                  child: const Text("Confirm"),
+                  child: const Text("Verify"),
                 ),
               ),
               const SizedBox(height: 16),
@@ -73,7 +87,12 @@ class ResetPassword extends StatelessWidget {
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LoginScreen(),
+                          ),
+                          (route) => false);
                     },
                     child: const Text("Sign in"),
                   ),
