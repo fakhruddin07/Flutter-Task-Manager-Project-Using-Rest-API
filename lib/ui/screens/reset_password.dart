@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager_project_using_rest_api/ui/screens/otp_verification_screen.dart';
+
+import 'login_screen.dart';
 import '../../widgets/screen_background.dart';
 
-class EmailVerificationScreen extends StatelessWidget {
-  const EmailVerificationScreen({super.key});
+class ResetPassword extends StatelessWidget {
+  const ResetPassword({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,12 +17,12 @@ class EmailVerificationScreen extends StatelessWidget {
             children: [
               const SizedBox(height: 65),
               Text(
-                "Your email address",
+                "Set Password",
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 5),
               Text(
-                "A 6 digit verification pin will send to your email address",
+                "Minimum length password 8 character with letter and number combination",
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium
@@ -30,8 +31,17 @@ class EmailVerificationScreen extends StatelessWidget {
               const SizedBox(height: 24),
               const TextField(
                 keyboardType: TextInputType.emailAddress,
+                obscureText: true,
                 decoration: InputDecoration(
-                  hintText: "Email",
+                  hintText: "Password",
+                ),
+              ),
+              const SizedBox(height: 16),
+              const TextField(
+                keyboardType: TextInputType.emailAddress,
+                obscureText: true,
+                decoration: InputDecoration(
+                  hintText: "Confirm Password",
                 ),
               ),
               const SizedBox(height: 16),
@@ -39,14 +49,15 @@ class EmailVerificationScreen extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
+                    Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const OtpVerification(),
+                        builder: (context) => const LoginScreen(),
                       ),
+                      (route) => false,
                     );
                   },
-                  child: const Icon(Icons.arrow_forward_ios_rounded),
+                  child: const Text("Confirm"),
                 ),
               ),
               const SizedBox(height: 16),

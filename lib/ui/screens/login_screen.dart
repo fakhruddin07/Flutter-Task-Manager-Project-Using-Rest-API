@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager_project_using_rest_api/ui/screens/email_verification_screen.dart';
+import 'package:task_manager_project_using_rest_api/ui/screens/signup_screen.dart';
 import '../../widgets/screen_background.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -74,7 +75,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SignupScreen(),
+                        ),
+                      );
+                    },
                     child: const Text("Sign up"),
                   ),
                 ],
