@@ -22,20 +22,22 @@ class _SignupScreenState extends State<SignupScreen> {
 
   Future<void> userSignUp() async {
     _isSignUpInProgress = true;
-    if(mounted){
+    if (mounted) {
       setState(() {});
     }
 
+    Map<String, dynamic> requestBody = {
+      "email": _emailTEController.text.trim(),
+      "firstName": _firstNameTEController.text.trim(),
+      "lastName": _lastNameTEController.text.trim(),
+      "mobile": _mobileTEController.text.trim(),
+      "password": _passwordTEController.text,
+      "photo": "",
+    };
+
     final response = await NetworkCaller().postRequest(
       Urls.registration,
-      <String, dynamic>{
-        "email": _emailTEController.text.trim(),
-        "firstName": _firstNameTEController.text.trim(),
-        "lastName": _lastNameTEController.text.trim(),
-        "mobile": _mobileTEController.text.trim(),
-        "password": _passwordTEController.text,
-        "photo": "",
-      },
+      requestBody,
     );
 
     if (response.isSuccess) {
@@ -52,7 +54,7 @@ class _SignupScreenState extends State<SignupScreen> {
           ),
         );
       }
-    }else{
+    } else {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -62,7 +64,7 @@ class _SignupScreenState extends State<SignupScreen> {
       }
     }
     _isSignUpInProgress = false;
-    if(mounted){
+    if (mounted) {
       setState(() {});
     }
   }
@@ -158,7 +160,8 @@ class _SignupScreenState extends State<SignupScreen> {
                   width: double.infinity,
                   child: Visibility(
                     visible: _isSignUpInProgress == false,
-                    replacement: const Center(child: CircularProgressIndicator()),
+                    replacement:
+                        const Center(child: CircularProgressIndicator()),
                     child: ElevatedButton(
                       onPressed: () {
                         if (!_formKey.currentState!.validate()) {
