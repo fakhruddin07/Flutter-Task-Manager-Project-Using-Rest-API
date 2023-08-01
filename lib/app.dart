@@ -2,12 +2,19 @@ import 'package:flutter/material.dart';
 
 import 'ui/screens/splash_screen.dart';
 
-class TasManagerApp extends StatelessWidget {
-  const TasManagerApp({super.key});
+class TaskManagerApp extends StatefulWidget {
+  static GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
+  const TaskManagerApp({super.key});
 
+  @override
+  State<TaskManagerApp> createState() => _TaskManagerAppState();
+}
+
+class _TaskManagerAppState extends State<TaskManagerApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      key: TaskManagerApp.globalKey,
       title: 'Flutter Task Manager Project Using Rest API',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

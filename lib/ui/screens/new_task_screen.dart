@@ -23,7 +23,7 @@ class NewTaskScreen extends StatelessWidget {
                     child: SummaryCard(number: 123, title: "New"),
                   ),
                   Expanded(
-                    child: SummaryCard(number: 123, title: "In Progress"),
+                    child: SummaryCard(number: 123, title: "Progress"),
                   ),
                   Expanded(
                     child: SummaryCard(number: 123, title: "Cancelled"),

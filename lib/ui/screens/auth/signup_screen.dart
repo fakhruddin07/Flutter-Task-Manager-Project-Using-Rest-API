@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager_project_using_rest_api/data/models/network_response.dart';
 import 'package:task_manager_project_using_rest_api/data/services/network_caller.dart';
 import 'package:task_manager_project_using_rest_api/data/utility/urls.dart';
 import '../../../widgets/screen_background.dart';
@@ -35,7 +36,7 @@ class _SignupScreenState extends State<SignupScreen> {
       "photo": "",
     };
 
-    final response = await NetworkCaller().postRequest(
+    final NetworkResponse response = await NetworkCaller().postRequest(
       Urls.registration,
       requestBody,
     );
@@ -58,7 +59,7 @@ class _SignupScreenState extends State<SignupScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text("Registration fa"),
+            content: Text("Registration fail!"),
           ),
         );
       }
