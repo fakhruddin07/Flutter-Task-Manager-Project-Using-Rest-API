@@ -25,7 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> userLogin() async {
     _isLoginProgress = true;
-    if(mounted){
+    if (mounted) {
       setState(() {});
     }
 
@@ -34,11 +34,11 @@ class _LoginScreenState extends State<LoginScreen> {
       "password": _passwordTKController.text,
     };
 
-    final NetworkResponse response =
-        await NetworkCaller().postRequest(Urls.login, requestBody);
+    final NetworkResponse response = await NetworkCaller()
+        .postRequest(Urls.login, requestBody, isLogin: true);
 
     _isLoginProgress = false;
-    if(mounted){
+    if (mounted) {
       setState(() {});
     }
 
@@ -115,7 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Visibility(
                     visible: _isLoginProgress == false,
                     replacement:
-                    const Center(child: CircularProgressIndicator()),
+                        const Center(child: CircularProgressIndicator()),
                     child: ElevatedButton(
                       onPressed: () {
                         userLogin();
