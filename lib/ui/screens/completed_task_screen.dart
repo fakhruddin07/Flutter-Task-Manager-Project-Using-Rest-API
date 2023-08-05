@@ -26,7 +26,7 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
     }
 
     final NetworkResponse response =
-    await NetworkCaller().getRequest(Urls.completedTasks);
+        await NetworkCaller().getRequest(Urls.completedTasks);
 
     if (response.statusCode == 200) {
       _taskListModel = TaskListModel.fromJson(response.body!);
@@ -66,7 +66,11 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
                 },
                 itemCount: _taskListModel.data!.length,
                 itemBuilder: (context, index) {
-                  return TaskListTile(data: _taskListModel.data![index],);
+                  return TaskListTile(
+                    data: _taskListModel.data![index],
+                    onEditTap: () {},
+                    onDeleteTap: () {},
+                  );
                 },
               ),
             ),

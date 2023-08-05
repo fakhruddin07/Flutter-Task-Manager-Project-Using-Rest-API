@@ -70,6 +70,8 @@ class _CancelTaskScreenState extends State<CancelTaskScreen> {
                       itemBuilder: (context, index) {
                         return TaskListTile(
                           data: _taskListModel.data![index],
+                          onEditTap: () {},
+                          onDeleteTap: () {},
                         );
                       },
                     ),
