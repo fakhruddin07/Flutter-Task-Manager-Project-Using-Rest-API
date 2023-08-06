@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager_project_using_rest_api/ui/screens/update_task_status_sheet.dart';
 
 import '../../data/models/network_response.dart';
 import '../../data/models/task_list_model.dart';
@@ -31,11 +32,13 @@ class _CancelTaskScreenState extends State<CancelTaskScreen> {
     if (response.statusCode == 200) {
       _taskListModel = TaskListModel.fromJson(response.body!);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("In Progress task list data get failed"),
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("In Progress task list data get failed"),
+          ),
+        );
+      }
     }
 
     _getCancelTaskInProgress = false;
@@ -50,6 +53,26 @@ class _CancelTaskScreenState extends State<CancelTaskScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       getCancelledTask();
     });
+  }
+
+  Future<void> deleteTask(String taskId) async {
+    final NetworkResponse response =
+    await NetworkCaller().getRequest(Urls.deleteTask(taskId));
+
+    if (response.isSuccess) {
+      _taskListModel.data!.removeWhere((element) => element.sId == taskId);
+      if (mounted) {
+        setState(() {});
+      }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Delete task failed"),
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -70,8 +93,13 @@ class _CancelTaskScreenState extends State<CancelTaskScreen> {
                       itemBuilder: (context, index) {
                         return TaskListTile(
                           data: _taskListModel.data![index],
-                          onEditTap: () {},
-                          onDeleteTap: () {},
+                          onEditTap: () {
+                            showStatusUpdateSheet(
+                                _taskListModel.data![index]);
+                          },
+                          onDeleteTap: () {
+                            deleteTask(_taskListModel.data![index].sId!);
+                          },
                         );
                       },
                     ),
@@ -81,4 +109,19 @@ class _CancelTaskScreenState extends State<CancelTaskScreen> {
       ),
     );
   }
+
+  void showStatusUpdateSheet(TaskData task) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return UpdateTaskStatusSheet(
+          task: task,
+          onUpdate: () {
+            getCancelledTask();
+          },
+        );
+      },
+    );
+  }
+
 }

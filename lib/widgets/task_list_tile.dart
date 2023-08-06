@@ -15,17 +15,17 @@ class TaskListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(data.title ?? "Unknown"),
+      title: Text(data.title ?? ""),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(data.description ?? ""),
-          Text(data.createdDate ?? "Unknown"),
+          Text(data.createdDate!),
           Row(
             children: [
               Chip(
                 label: Text(
-                  data.status ?? "New",
+                  data.status!,
                   style: const TextStyle(color: Colors.white),
                 ),
                 backgroundColor: Colors.blue,

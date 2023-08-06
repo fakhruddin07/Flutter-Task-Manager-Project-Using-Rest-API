@@ -40,9 +40,9 @@ class _BottomNavBaseScreenState extends State<BottomNavBaseScreen> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.add_business), label: "New"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.account_tree), label: "In Progress"),
+              icon: Icon(Icons.account_tree), label: "Progress"),
           BottomNavigationBarItem(icon: Icon(Icons.cancel), label: "Cancel"),
-          BottomNavigationBarItem(icon: Icon(Icons.done), label: "Done"),
+          BottomNavigationBarItem(icon: Icon(Icons.done), label: "Complete"),
         ],
       ),
     );

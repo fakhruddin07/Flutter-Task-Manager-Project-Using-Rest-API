@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager_project_using_rest_api/ui/screens/update_task_status_sheet.dart';
 
 import '../../data/models/network_response.dart';
 import '../../data/models/task_list_model.dart';
@@ -52,6 +53,26 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
     });
   }
 
+  Future<void> deleteTask(String taskId) async {
+    final NetworkResponse response =
+    await NetworkCaller().getRequest(Urls.deleteTask(taskId));
+
+    if (response.isSuccess) {
+      _taskListModel.data!.removeWhere((element) => element.sId == taskId);
+      if (mounted) {
+        setState(() {});
+      }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Delete task failed"),
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,8 +89,13 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
                 itemBuilder: (context, index) {
                   return TaskListTile(
                     data: _taskListModel.data![index],
-                    onEditTap: () {},
-                    onDeleteTap: () {},
+                    onEditTap: () {
+                      showStatusUpdateSheet(
+                          _taskListModel.data![index]);
+                    },
+                    onDeleteTap: () {
+                      deleteTask(_taskListModel.data![index].sId!);
+                    },
                   );
                 },
               ),
@@ -79,4 +105,19 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
       ),
     );
   }
+
+  void showStatusUpdateSheet(TaskData task) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return UpdateTaskStatusSheet(
+          task: task,
+          onUpdate: () {
+            getCompletedTask();
+          },
+        );
+      },
+    );
+  }
+
 }

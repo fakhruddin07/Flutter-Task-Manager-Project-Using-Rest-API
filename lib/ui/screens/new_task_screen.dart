@@ -5,6 +5,8 @@ import 'package:task_manager_project_using_rest_api/data/models/task_list_model.
 import 'package:task_manager_project_using_rest_api/data/services/network_caller.dart';
 import 'package:task_manager_project_using_rest_api/data/utility/urls.dart';
 import 'package:task_manager_project_using_rest_api/ui/screens/add_new_task_screen.dart';
+import 'package:task_manager_project_using_rest_api/ui/screens/update_task_status_sheet.dart';
+import 'package:task_manager_project_using_rest_api/widgets/screen_background.dart';
 
 import '../../widgets/summary_card.dart';
 import '../../widgets/task_list_tile.dart';
@@ -45,11 +47,13 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     if (response.statusCode == 200) {
       _summaryCountModel = SummaryCountModel.fromJson(response.body!);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Summary data get failed"),
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Summary data get failed"),
+          ),
+        );
+      }
     }
 
     _getCountSummaryInProgress = false;
@@ -70,11 +74,13 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     if (response.statusCode == 200) {
       _taskListModel = TaskListModel.fromJson(response.body!);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("new task list data get failed"),
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("new task list data get failed"),
+          ),
+        );
+      }
     }
 
     _getNewTaskInProgress = false;
@@ -89,7 +95,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
 
     if (response.isSuccess) {
       _taskListModel.data!.removeWhere((element) => element.sId == taskId);
-      if(mounted){
+      if (mounted) {
         setState(() {});
       }
     } else {
@@ -106,7 +112,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
+      body: ScreenBackground(
         child: Column(
           children: [
             const UserProfileBanner(),
@@ -151,7 +157,10 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                         itemBuilder: (context, index) {
                           return TaskListTile(
                             data: _taskListModel.data![index],
-                            onEditTap: () {},
+                            onEditTap: () {
+                              showStatusUpdateSheet(
+                                  _taskListModel.data![index]);
+                            },
                             onDeleteTap: () {
                               deleteTask(_taskListModel.data![index].sId!);
                             },
@@ -174,6 +183,20 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
         },
         child: const Icon(Icons.add),
       ),
+    );
+  }
+
+  void showStatusUpdateSheet(TaskData task) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return UpdateTaskStatusSheet(
+          task: task,
+          onUpdate: () {
+            getNewTask();
+          },
+        );
+      },
     );
   }
 }
