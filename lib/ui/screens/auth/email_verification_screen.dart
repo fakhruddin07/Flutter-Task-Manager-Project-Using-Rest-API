@@ -1,9 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager_project_using_rest_api/data/models/network_response.dart';
+import 'package:task_manager_project_using_rest_api/data/services/network_caller.dart';
+import 'package:task_manager_project_using_rest_api/data/utility/urls.dart';
 import 'package:task_manager_project_using_rest_api/ui/screens/auth/otp_verification_screen.dart';
 import '../../../widgets/screen_background.dart';
 
-class EmailVerificationScreen extends StatelessWidget {
+class EmailVerificationScreen extends StatefulWidget {
   const EmailVerificationScreen({super.key});
+
+  @override
+  State<EmailVerificationScreen> createState() =>
+      _EmailVerificationScreenState();
+}
+
+class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
+  final TextEditingController _emailTEController = TextEditingController();
+  bool _emailVerificationInProgress = false;
+
+  Future<void> sendOtpToEmail() async {
+    _emailVerificationInProgress = true;
+    if (mounted) {
+      setState(() {});
+    }
+
+    NetworkResponse response = await NetworkCaller().getRequest(
+      Urls.sendOtpToEmail(_emailTEController.text.trim()),
+    );
+
+    _emailVerificationInProgress = false;
+    if (mounted) {
+      setState(() {});
+    }
+    if (response.isSuccess) {
+      if (mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OtpVerificationScreen(
+              email: _emailTEController.text.trim(),
+            ),
+          ),
+        );
+      }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Email verification has been failed!'),
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,25 +76,25 @@ class EmailVerificationScreen extends StatelessWidget {
                     ?.copyWith(color: Colors.grey),
               ),
               const SizedBox(height: 24),
-              const TextField(
+              TextField(
+                controller: _emailTEController,
                 keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: "Email",
                 ),
               ),
               const SizedBox(height: 16),
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const OtpVerification(),
-                      ),
-                    );
-                  },
-                  child: const Icon(Icons.arrow_forward_ios_rounded),
+                child: Visibility(
+                  visible: _emailVerificationInProgress == false,
+                  replacement: const Center(child: CircularProgressIndicator()),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      sendOtpToEmail();
+                    },
+                    child: const Icon(Icons.arrow_forward_ios_rounded),
+                  ),
                 ),
               ),
               const SizedBox(height: 16),
