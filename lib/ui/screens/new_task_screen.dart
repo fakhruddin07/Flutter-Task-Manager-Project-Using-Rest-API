@@ -10,7 +10,7 @@ import 'package:task_manager_project_using_rest_api/widgets/screen_background.da
 
 import '../../widgets/summary_card.dart';
 import '../../widgets/task_list_tile.dart';
-import '../../widgets/user_profile_banner.dart';
+import '../../widgets/user_profile_app_bar.dart';
 
 class NewTaskScreen extends StatefulWidget {
   const NewTaskScreen({super.key});
@@ -115,7 +115,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
       body: ScreenBackground(
         child: Column(
           children: [
-            const UserProfileBanner(),
+            const UserProfileAppBar(),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: _getCountSummaryInProgress
@@ -146,6 +146,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
               child: RefreshIndicator(
                 onRefresh: () async {
                   getNewTask();
+                  getCountSummary();
                 },
                 child: _getNewTaskInProgress
                     ? const Center(child: CircularProgressIndicator())

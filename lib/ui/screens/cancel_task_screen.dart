@@ -6,7 +6,7 @@ import '../../data/models/task_list_model.dart';
 import '../../data/services/network_caller.dart';
 import '../../data/utility/urls.dart';
 import '../../widgets/task_list_tile.dart';
-import '../../widgets/user_profile_banner.dart';
+import '../../widgets/user_profile_app_bar.dart';
 
 class CancelTaskScreen extends StatefulWidget {
   const CancelTaskScreen({super.key});
@@ -35,7 +35,7 @@ class _CancelTaskScreenState extends State<CancelTaskScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text("In Progress task list data get failed"),
+            content: Text("Cancel task list data get failed"),
           ),
         );
       }
@@ -50,7 +50,7 @@ class _CancelTaskScreenState extends State<CancelTaskScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       getCancelledTask();
     });
   }
@@ -81,7 +81,7 @@ class _CancelTaskScreenState extends State<CancelTaskScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            const UserProfileBanner(),
+            const UserProfileAppBar(),
             Expanded(
               child: _getCancelTaskInProgress
                   ? const Center(child: CircularProgressIndicator())
@@ -89,7 +89,7 @@ class _CancelTaskScreenState extends State<CancelTaskScreen> {
                       separatorBuilder: (context, index) {
                         return const Divider(height: 4);
                       },
-                      itemCount: _taskListModel.data!.length ?? 0,
+                      itemCount: _taskListModel.data!.length,
                       itemBuilder: (context, index) {
                         return TaskListTile(
                           data: _taskListModel.data![index],

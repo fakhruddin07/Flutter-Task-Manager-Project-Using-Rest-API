@@ -4,7 +4,7 @@ import 'package:task_manager_project_using_rest_api/data/services/network_caller
 import 'package:task_manager_project_using_rest_api/data/utility/urls.dart';
 import 'package:task_manager_project_using_rest_api/ui/screens/new_task_screen.dart';
 import 'package:task_manager_project_using_rest_api/widgets/screen_background.dart';
-import 'package:task_manager_project_using_rest_api/widgets/user_profile_banner.dart';
+import 'package:task_manager_project_using_rest_api/widgets/user_profile_app_bar.dart';
 
 class AddNewTaskScreen extends StatefulWidget {
   const AddNewTaskScreen({super.key});
@@ -62,7 +62,7 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const UserProfileBanner(),
+              const UserProfileAppBar(),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(

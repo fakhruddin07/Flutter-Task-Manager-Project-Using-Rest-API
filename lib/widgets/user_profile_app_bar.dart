@@ -1,17 +1,18 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:task_manager_project_using_rest_api/data/models/auth_utility.dart';
 import 'package:task_manager_project_using_rest_api/ui/screens/auth/login_screen.dart';
 import 'package:task_manager_project_using_rest_api/ui/screens/update_profile_screen.dart';
 
-class UserProfileBanner extends StatefulWidget {
+class UserProfileAppBar extends StatefulWidget {
   final bool? isUpdateScreen;
-  const UserProfileBanner({super.key, this.isUpdateScreen});
+  const UserProfileAppBar({super.key, this.isUpdateScreen});
 
   @override
-  State<UserProfileBanner> createState() => _UserProfileBannerState();
+  State<UserProfileAppBar> createState() => _UserProfileAppBarState();
 }
 
-class _UserProfileBannerState extends State<UserProfileBanner> {
+class _UserProfileAppBarState extends State<UserProfileAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -22,7 +23,7 @@ class _UserProfileBannerState extends State<UserProfileBanner> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => UpdateProfileScreen(),
+                builder: (context) => const UpdateProfileScreen(),
               ),
             );
           }
@@ -33,10 +34,10 @@ class _UserProfileBannerState extends State<UserProfileBanner> {
               visible: (widget.isUpdateScreen ?? false) == false,
               child: Row(
                 children: [
-                  CircleAvatar(
-                    backgroundImage:
-                        NetworkImage(AuthUtility.userInfo.data?.photo ?? ""),
-                    radius: 15,
+                  CachedNetworkImage(
+                    placeholder: (_, __) => const Icon(Icons.account_circle_rounded),
+                    imageUrl: AuthUtility.userInfo.data?.photo ?? "",
+                    errorWidget: (_, __, ___) => const Icon(Icons.account_circle_rounded),
                   ),
                   const SizedBox(width: 16),
                 ],

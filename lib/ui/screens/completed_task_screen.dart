@@ -6,7 +6,7 @@ import '../../data/models/task_list_model.dart';
 import '../../data/services/network_caller.dart';
 import '../../data/utility/urls.dart';
 import '../../widgets/task_list_tile.dart';
-import '../../widgets/user_profile_banner.dart';
+import '../../widgets/user_profile_app_bar.dart';
 
 class CompletedTaskScreen extends StatefulWidget {
   const CompletedTaskScreen({super.key});
@@ -32,11 +32,13 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
     if (response.statusCode == 200) {
       _taskListModel = TaskListModel.fromJson(response.body!);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("In Progress task list data get failed"),
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Completed task list data get failed"),
+          ),
+        );
+      }
     }
 
     _getCompletedTaskInProgress = false;
@@ -48,14 +50,14 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       getCompletedTask();
     });
   }
 
   Future<void> deleteTask(String taskId) async {
     final NetworkResponse response =
-    await NetworkCaller().getRequest(Urls.deleteTask(taskId));
+        await NetworkCaller().getRequest(Urls.deleteTask(taskId));
 
     if (response.isSuccess) {
       _taskListModel.data!.removeWhere((element) => element.sId == taskId);
@@ -79,9 +81,10 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            const UserProfileBanner(),
+            const UserProfileAppBar(),
             Expanded(
-              child: ListView.separated(
+              child: _getCompletedTaskInProgress
+                  ? const Center(child: CircularProgressIndicator()) : ListView.separated(
                 separatorBuilder: (context, index) {
                   return const Divider(height: 4);
                 },
@@ -90,8 +93,7 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
                   return TaskListTile(
                     data: _taskListModel.data![index],
                     onEditTap: () {
-                      showStatusUpdateSheet(
-                          _taskListModel.data![index]);
+                      showStatusUpdateSheet(_taskListModel.data![index]);
                     },
                     onDeleteTap: () {
                       deleteTask(_taskListModel.data![index].sId!);
@@ -119,5 +121,4 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
       },
     );
   }
-
 }

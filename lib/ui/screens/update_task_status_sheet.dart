@@ -44,11 +44,13 @@ class _UpdateTaskStatusSheetState extends State<UpdateTaskStatusSheet> {
       if (mounted) {
         Navigator.pop(context);
       }
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Update task status has been failed"),
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Update task status has been failed"),
+          ),
+        );
+      }
     }
   }
 

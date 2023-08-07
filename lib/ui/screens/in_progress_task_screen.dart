@@ -6,7 +6,7 @@ import '../../data/models/task_list_model.dart';
 import '../../data/services/network_caller.dart';
 import '../../data/utility/urls.dart';
 import '../../widgets/task_list_tile.dart';
-import '../../widgets/user_profile_banner.dart';
+import '../../widgets/user_profile_app_bar.dart';
 
 class InProgressTaskScreen extends StatefulWidget {
   const InProgressTaskScreen({super.key});
@@ -81,7 +81,7 @@ class _InProgressTaskScreenState extends State<InProgressTaskScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            const UserProfileBanner(),
+            const UserProfileAppBar(),
             Expanded(
               child: _getProgressTaskInProgress
                   ? const Center(child: CircularProgressIndicator())
