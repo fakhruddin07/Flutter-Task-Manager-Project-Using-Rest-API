@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'bindings/controller_binding.dart';
 import 'ui/screens/splash_screen.dart';
+import 'package:get/get.dart';
 
 class TaskManagerApp extends StatefulWidget {
   static GlobalKey<NavigatorState> globalKey = GlobalKey<NavigatorState>();
@@ -12,7 +14,7 @@ class TaskManagerApp extends StatefulWidget {
 class _TaskManagerAppState extends State<TaskManagerApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       navigatorKey: TaskManagerApp.globalKey,
       title: 'Flutter Task Manager Project Using Rest API',
       debugShowCheckedModeBanner: false,
@@ -65,7 +67,9 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
         ),
       ),
       themeMode: ThemeMode.light,
+      initialBinding: ControllerBinding(),
       home: const SplashScreen(),
     );
   }
 }
+
