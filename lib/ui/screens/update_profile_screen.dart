@@ -5,6 +5,9 @@ import 'package:task_manager_project_using_rest_api/ui/state_manager/update_prof
 import 'package:task_manager_project_using_rest_api/widgets/screen_background.dart';
 import 'package:task_manager_project_using_rest_api/widgets/user_profile_app_bar.dart';
 
+import '../../data/models/auth_utility.dart';
+import '../../data/models/login_model.dart';
+
 class UpdateProfileScreen extends StatefulWidget {
   const UpdateProfileScreen({super.key});
 
@@ -13,13 +16,12 @@ class UpdateProfileScreen extends StatefulWidget {
 }
 
 class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
+  UserData userData = AuthUtility.userInfo.data!;
   final TextEditingController _emailTEController = TextEditingController();
   final TextEditingController _firstNameTEController = TextEditingController();
   final TextEditingController _lastNameTEController = TextEditingController();
   final TextEditingController _mobileTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
-  final UpdateProfileController _updateProfileController =
-      Get.find<UpdateProfileController>();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   XFile? imageFile;
@@ -39,10 +41,10 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _emailTEController.text = _updateProfileController.userData.email ?? "";
-    _firstNameTEController.text = _updateProfileController.userData.firstName ?? "";
-    _lastNameTEController.text = _updateProfileController.userData.lastName ?? "";
-    _mobileTEController.text = _updateProfileController.userData.mobile ?? "";
+    _emailTEController.text = userData.email ?? "";
+    _firstNameTEController.text = userData.firstName ?? "";
+    _lastNameTEController.text = userData.lastName ?? "";
+    _mobileTEController.text = userData.mobile ?? "";
   }
 
   @override

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:task_manager_project_using_rest_api/data/models/task_list_model.dart';
-
-import '../../data/models/network_response.dart';
-import '../../data/services/network_caller.dart';
-import '../../data/utility/urls.dart';
+import '../state_manager/update_task_state_controller.dart';
 
 class UpdateTaskStatusSheet extends StatefulWidget {
   final TaskData task;
@@ -18,7 +16,6 @@ class UpdateTaskStatusSheet extends StatefulWidget {
 class _UpdateTaskStatusSheetState extends State<UpdateTaskStatusSheet> {
   List<String> taskStatusList = ["New", "Progress", "Canceled", "Completed"];
   late String _selectedStatus;
-  bool updateTaskStatusInProgress = false;
 
   @override
   initState() {
@@ -26,84 +23,74 @@ class _UpdateTaskStatusSheetState extends State<UpdateTaskStatusSheet> {
     super.initState();
   }
 
-  Future<void> updateTaskStatus(String taskId, String newStatus) async {
-    updateTaskStatusInProgress = true;
-    if (mounted) {
-      setState(() {});
-    }
-
-    final NetworkResponse response = await NetworkCaller()
-        .getRequest(Urls.listTaskByStatus(taskId, newStatus));
-
-    if (response.isSuccess) {
-      widget.onUpdate();
-      if (mounted) {
-        Navigator.pop(context);
-      }
-    } else {
-      if (mounted) {
-        Navigator.pop(context);
-      }
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Update task status has been failed"),
-          ),
-        );
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 400,
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(
-              "Update Status",
-              style: Theme.of(context).textTheme.titleLarge,
+      child: GetBuilder<UpdateTaskStateController>(
+          builder: (updateTaskStateController) {
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                "Update Status",
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: taskStatusList.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  onTap: () {
-                    _selectedStatus = taskStatusList[index];
-                    setState(() {});
-                  },
-                  title: Text(taskStatusList[index].toUpperCase()),
-                  trailing: _selectedStatus == taskStatusList[index]
-                      ? const Icon(Icons.check)
-                      : null,
-                );
-              },
+            Expanded(
+              child: ListView.builder(
+                itemCount: taskStatusList.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    onTap: () {
+                      _selectedStatus = taskStatusList[index];
+                      setState(() {});
+                    },
+                    title: Text(taskStatusList[index].toUpperCase()),
+                    trailing: _selectedStatus == taskStatusList[index]
+                        ? const Icon(Icons.check)
+                        : null,
+                  );
+                },
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: SizedBox(
-              width: double.infinity,
-              child: Visibility(
-                visible: updateTaskStatusInProgress == false,
-                replacement: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-                child: ElevatedButton(
-                  onPressed: () {
-                    updateTaskStatus(widget.task.sId!, _selectedStatus);
-                  },
-                  child: const Text("Update"),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: SizedBox(
+                width: double.infinity,
+                child: Visibility(
+                  visible:
+                      updateTaskStateController.updateTaskStatusInProgress ==
+                          false,
+                  replacement: const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      updateTaskStateController
+                          .updateTaskStatus(widget.task.sId!, _selectedStatus)
+                          .then((result) {
+                        widget.onUpdate;
+                        if (result == true) {
+                          Get.snackbar(
+                              "Success", "Status updated successfully");
+                          Get.back();
+                        } else {
+                          Get.snackbar(
+                              "Failed!", "Status update failed");
+                          Get.back();
+                        }
+                      });
+                    },
+                    child: const Text("Update"),
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
-      ),
+          ],
+        );
+      }),
     );
   }
 }

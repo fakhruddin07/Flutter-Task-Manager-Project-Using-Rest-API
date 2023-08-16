@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager_project_using_rest_api/data/models/network_response.dart';
-import 'package:task_manager_project_using_rest_api/data/services/network_caller.dart';
-import 'package:task_manager_project_using_rest_api/data/utility/urls.dart';
+import 'package:get/get.dart';
 import 'package:task_manager_project_using_rest_api/ui/screens/auth/otp_verification_screen.dart';
+import 'package:task_manager_project_using_rest_api/ui/state_manager/email_verification_controller.dart';
 import '../../../widgets/screen_background.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
@@ -15,44 +14,7 @@ class EmailVerificationScreen extends StatefulWidget {
 
 class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   final TextEditingController _emailTEController = TextEditingController();
-  bool _emailVerificationInProgress = false;
-
-  Future<void> sendOtpToEmail() async {
-    _emailVerificationInProgress = true;
-    if (mounted) {
-      setState(() {});
-    }
-
-    NetworkResponse response = await NetworkCaller().getRequest(
-      Urls.sendOtpToEmail(_emailTEController.text.trim()),
-    );
-
-    _emailVerificationInProgress = false;
-    if (mounted) {
-      setState(() {});
-    }
-    if (response.isSuccess) {
-      if (mounted) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => OtpVerificationScreen(
-              email: _emailTEController.text.trim(),
-            ),
-          ),
-        );
-      }
-    } else {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Email verification has been failed!'),
-          ),
-        );
-      }
-    }
-  }
-
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,27 +38,60 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                     ?.copyWith(color: Colors.grey),
               ),
               const SizedBox(height: 24),
-              TextField(
-                controller: _emailTEController,
-                keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
-                  hintText: "Email",
+              Form(
+                key: _formKey,
+                child: TextFormField(
+                  controller: _emailTEController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: const InputDecoration(
+                    hintText: "Email",
+                  ),
+                  validator: (String? value) {
+                    if (value?.isNotEmpty ?? true) {
+                      return 'Enter your valid email';
+                    }
+                    return null;
+                  },
                 ),
               ),
               const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                child: Visibility(
-                  visible: _emailVerificationInProgress == false,
-                  replacement: const Center(child: CircularProgressIndicator()),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      sendOtpToEmail();
-                    },
-                    child: const Icon(Icons.arrow_forward_ios_rounded),
+              GetBuilder<EmailVerificationController>(
+                  builder: (emailVerificationController) {
+                return SizedBox(
+                  width: double.infinity,
+                  child: Visibility(
+                    visible: emailVerificationController
+                            .emailVerificationInProgress ==
+                        false,
+                    replacement:
+                        const Center(child: CircularProgressIndicator()),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (!_formKey.currentState!.validate()) {
+                          return;
+                        }
+                        emailVerificationController
+                            .sendOtpToEmail(_emailTEController.text.trim())
+                            .then((result) {
+                          if (result == true) {
+                            Get.snackbar(
+                                'Success', 'Email verification successful!');
+                            Get.to(
+                              OtpVerificationScreen(
+                                email: _emailTEController.text.trim(),
+                              ),
+                            );
+                          } else {
+                            Get.snackbar(
+                                'Failed!', 'Email verification failed!');
+                          }
+                        });
+                      },
+                      child: const Icon(Icons.arrow_forward_ios_rounded),
+                    ),
                   ),
-                ),
-              ),
+                );
+              }),
               const SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

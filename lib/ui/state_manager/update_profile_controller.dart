@@ -7,7 +7,6 @@ import '../../data/services/network_caller.dart';
 import '../../data/utility/urls.dart';
 
 class UpdateProfileController extends GetxController{
-  UserData userData = AuthUtility.userInfo.data!;
   bool _isUpdateProfileInProgress = false;
 
   bool get isUpdateProfileInProgress => _isUpdateProfileInProgress;
@@ -34,6 +33,7 @@ class UpdateProfileController extends GetxController{
     update();
 
     if (response.isSuccess) {
+      UserData userData = AuthUtility.userInfo.data!;
       userData.firstName = firstName;
       userData.lastName = lastName;
       userData.mobile = mobile;
