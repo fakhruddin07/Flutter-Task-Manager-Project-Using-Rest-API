@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:task_manager_project_using_rest_api/ui/state_manager/add_new_task_controller.dart';
 import 'package:task_manager_project_using_rest_api/ui/state_manager/completed_task_controller.dart';
 import '../ui/state_manager/cancel_task_controller.dart';
 import '../ui/state_manager/get_new_task_controller.dart';
@@ -17,5 +18,6 @@ class ControllerBinding extends Bindings {
     Get.put<ProgressTaskController>(ProgressTaskController());
     Get.put<CancelTaskController>(CancelTaskController());
     Get.put<CompletedTaskController>(CompletedTaskController());
+    Get.put<AddNewTaskController>(AddNewTaskController());
   }
 }

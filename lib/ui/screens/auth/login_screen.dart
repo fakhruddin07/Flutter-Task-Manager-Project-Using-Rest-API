@@ -64,30 +64,36 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                GetBuilder<LoginController>(
-                  builder: (loginController) {
-                    return SizedBox(
-                      width: double.infinity,
-                      child: Visibility(
-                        visible: loginController.isLoginProgress == false,
-                        replacement:
-                            const Center(child: CircularProgressIndicator()),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            loginController.userLogin(_emailTKController.text.trim(), _passwordTKController.text).then((result){
-                              if(result == true){
+                GetBuilder<LoginController>(builder: (loginController) {
+                  return SizedBox(
+                    width: double.infinity,
+                    child: Visibility(
+                      visible: loginController.isLoginProgress == false,
+                      replacement:
+                          const Center(child: CircularProgressIndicator()),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (!_formKey.currentState!.validate()) {
+                            return;
+                          } else {
+                            loginController
+                                .userLogin(_emailTKController.text.trim(),
+                                    _passwordTKController.text)
+                                .then((result) {
+                              if (result == true) {
                                 Get.offAll(const BottomNavBaseScreen());
-                              }else{
-                                Get.snackbar("Login Failed!", "Incorrect email or password! try again");
+                              } else {
+                                Get.snackbar("Login Failed!",
+                                    "Incorrect email or password! try again");
                               }
                             });
-                          },
-                          child: const Icon(Icons.arrow_forward_ios_rounded),
-                        ),
+                          }
+                        },
+                        child: const Icon(Icons.arrow_forward_ios_rounded),
                       ),
-                    );
-                  }
-                ),
+                    ),
+                  );
+                }),
                 const SizedBox(height: 16),
                 Center(
                   child: InkWell(
