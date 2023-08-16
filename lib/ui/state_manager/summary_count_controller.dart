@@ -18,15 +18,14 @@ class SummaryCountController extends GetxController {
 
     final NetworkResponse response =
         await NetworkCaller().getRequest(Urls.taskStatusCount);
+
     _getCountSummaryInProgress = false;
+    update();
 
     if (response.statusCode == 200) {
       _summaryCountModel = SummaryCountModel.fromJson(response.body!);
-      update();
       return true;
     } else {
-      message = "Summary data get failed";
-      update();
       return false;
     }
   }
