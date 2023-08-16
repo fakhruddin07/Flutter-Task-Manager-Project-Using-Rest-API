@@ -98,7 +98,7 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
                                   _descriptionTEController.text.trim(),
                                 )
                                     .then((result) {
-                                  if (result) {
+                                  if (result == true) {
                                     _titleTEController.clear();
                                     _descriptionTEController.clear();
                                     Get.snackbar(

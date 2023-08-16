@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:task_manager_project_using_rest_api/data/models/auth_utility.dart';
-import 'package:task_manager_project_using_rest_api/data/models/login_model.dart';
-import 'package:task_manager_project_using_rest_api/data/models/network_response.dart';
-import 'package:task_manager_project_using_rest_api/data/services/network_caller.dart';
-import 'package:task_manager_project_using_rest_api/data/utility/urls.dart';
+import 'package:task_manager_project_using_rest_api/ui/state_manager/update_profile_controller.dart';
 import 'package:task_manager_project_using_rest_api/widgets/screen_background.dart';
 import 'package:task_manager_project_using_rest_api/widgets/user_profile_app_bar.dart';
 
@@ -16,13 +13,13 @@ class UpdateProfileScreen extends StatefulWidget {
 }
 
 class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
-  UserData userData = AuthUtility.userInfo.data!;
   final TextEditingController _emailTEController = TextEditingController();
   final TextEditingController _firstNameTEController = TextEditingController();
   final TextEditingController _lastNameTEController = TextEditingController();
   final TextEditingController _mobileTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
-  bool _isUpdateProfileInProgress = false;
+  final UpdateProfileController _updateProfileController =
+      Get.find<UpdateProfileController>();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   XFile? imageFile;
@@ -42,58 +39,10 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _emailTEController.text = userData.email ?? "";
-    _firstNameTEController.text = userData.firstName ?? "";
-    _lastNameTEController.text = userData.lastName ?? "";
-    _mobileTEController.text = userData.mobile ?? "";
-  }
-
-  Future<void> updateProfile() async {
-    _isUpdateProfileInProgress = true;
-    if (mounted) {
-      setState(() {});
-    }
-
-    final Map<String, dynamic> requestBody = {
-      "firstName": _firstNameTEController.text.trim(),
-      "lastName": _lastNameTEController.text.trim(),
-      "mobile": _mobileTEController.text.trim(),
-      "photo": "",
-    };
-
-    if(_passwordTEController.text.isNotEmpty){
-      requestBody["password"] = _passwordTEController.text;
-    }
-
-    final NetworkResponse response =
-        await NetworkCaller().postRequest(Urls.profileUpdate, requestBody);
-
-    _isUpdateProfileInProgress = false;
-    if (mounted) {
-      setState(() {});
-    }
-    if (response.isSuccess) {
-      userData.firstName = _firstNameTEController.text.trim();
-      userData.lastName = _lastNameTEController.text.trim();
-      userData.mobile = _mobileTEController.text.trim();
-      AuthUtility.updateUserInfo(userData);
-      _passwordTEController.clear();
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Profile Updated Successfully"),
-          ),
-        );
-      }
-    } else {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Profile Update failed! try again"),
-          ),
-        );
-      }
-    }
+    _emailTEController.text = _updateProfileController.userData.email ?? "";
+    _firstNameTEController.text = _updateProfileController.userData.firstName ?? "";
+    _lastNameTEController.text = _updateProfileController.userData.lastName ?? "";
+    _mobileTEController.text = _updateProfileController.userData.mobile ?? "";
   }
 
   @override
@@ -221,24 +170,49 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         },
                       ),
                       const SizedBox(height: 16),
-                      SizedBox(
-                        width: double.infinity,
-                        child: _isUpdateProfileInProgress
-                            ? const Center(
-                                child: CircularProgressIndicator(),
-                              )
-                            : Visibility(
-                                // visible: _isSignUpInProgress == false,
-                                replacement: const Center(
-                                    child: CircularProgressIndicator()),
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    updateProfile();
-                                  },
-                                  child: const Text("Update"),
+                      GetBuilder<UpdateProfileController>(
+                          builder: (updateProfileController) {
+                        return SizedBox(
+                          width: double.infinity,
+                          child: updateProfileController
+                                      .isUpdateProfileInProgress ==
+                                  false
+                              ? const Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                              : Visibility(
+                                  // visible: _isSignUpInProgress == false,
+                                  replacement: const Center(
+                                      child: CircularProgressIndicator()),
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      if (!_formKey.currentState!.validate()) {
+                                        return;
+                                      }
+                                      updateProfileController
+                                          .updateProfile(
+                                              _firstNameTEController.text
+                                                  .trim(),
+                                              _lastNameTEController.text.trim(),
+                                              _mobileTEController.text.trim(),
+                                              _passwordTEController.text)
+                                          .then((value) {
+                                        if (value == true) {
+                                          _passwordTEController.clear();
+                                          Get.snackbar("Success",
+                                              "Profile Updated successfully");
+                                          Get.back();
+                                        }else{
+                                          Get.snackbar("Failed!",
+                                              "Profile Updated failed!");
+                                        }
+                                      });
+                                    },
+                                    child: const Text("Update"),
+                                  ),
                                 ),
-                              ),
-                      ),
+                        );
+                      }),
                       const SizedBox(height: 16),
                     ],
                   ),

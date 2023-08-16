@@ -30,13 +30,6 @@ class LoginController extends GetxController{
       return true;
     } else {
       return false;
-      /*if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Incorrect email or password"),
-          ),
-        );
-      }*/
     }
   }
 }
