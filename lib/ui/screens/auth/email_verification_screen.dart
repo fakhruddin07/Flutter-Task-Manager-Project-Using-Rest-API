@@ -105,7 +105,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      Get.back();
                     },
                     child: const Text("Sign in"),
                   ),

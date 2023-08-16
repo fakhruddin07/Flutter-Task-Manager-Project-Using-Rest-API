@@ -97,12 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Center(
                   child: InkWell(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const EmailVerificationScreen(),
-                        ),
-                      );
+                      Get.to(() => const EmailVerificationScreen());
                     },
                     child: const Text(
                       "Forget Password?",
@@ -122,12 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     TextButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SignupScreen(),
-                          ),
-                        );
+                        Get.to(() => SignupScreen());
                       },
                       child: const Text("Sign up"),
                     ),

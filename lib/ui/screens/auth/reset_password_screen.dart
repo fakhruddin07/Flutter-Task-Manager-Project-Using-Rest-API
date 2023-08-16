@@ -121,7 +121,7 @@ class ResetPasswordScreen extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () {
-                        Navigator.pop(context);
+                        Get.back();
                       },
                       child: const Text("Sign in"),
                     ),

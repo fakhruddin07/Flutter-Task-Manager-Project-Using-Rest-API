@@ -1,74 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager_project_using_rest_api/data/models/network_response.dart';
-import 'package:task_manager_project_using_rest_api/data/services/network_caller.dart';
-import 'package:task_manager_project_using_rest_api/data/utility/urls.dart';
+import 'package:get/get.dart';
+import 'package:task_manager_project_using_rest_api/ui/state_manager/signup_controller.dart';
 import '../../../widgets/screen_background.dart';
 
-class SignupScreen extends StatefulWidget {
-  const SignupScreen({super.key});
+class SignupScreen extends StatelessWidget {
+  SignupScreen({super.key});
 
-  @override
-  State<SignupScreen> createState() => _SignupScreenState();
-}
-
-class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _emailTEController = TextEditingController();
+
   final TextEditingController _firstNameTEController = TextEditingController();
+
   final TextEditingController _lastNameTEController = TextEditingController();
+
   final TextEditingController _mobileTEController = TextEditingController();
+
   final TextEditingController _passwordTEController = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _isSignUpInProgress = false;
-
-  Future<void> userSignUp() async {
-    _isSignUpInProgress = true;
-    if (mounted) {
-      setState(() {});
-    }
-
-    Map<String, dynamic> requestBody = {
-      "email": _emailTEController.text.trim(),
-      "firstName": _firstNameTEController.text.trim(),
-      "lastName": _lastNameTEController.text.trim(),
-      "mobile": _mobileTEController.text.trim(),
-      "password": _passwordTEController.text,
-      "photo": "",
-    };
-
-    final NetworkResponse response = await NetworkCaller().postRequest(
-      Urls.registration,
-      requestBody,
-    );
-
-    if (response.isSuccess) {
-      _emailTEController.clear();
-      _firstNameTEController.clear();
-      _lastNameTEController.clear();
-      _mobileTEController.clear();
-      _passwordTEController.clear();
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Registration Success"),
-          ),
-        );
-      }
-    } else {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Registration fail!"),
-          ),
-        );
-      }
-    }
-    _isSignUpInProgress = false;
-    if (mounted) {
-      setState(() {});
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -157,24 +105,51 @@ class _SignupScreenState extends State<SignupScreen> {
                   },
                 ),
                 const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  child: Visibility(
-                    visible: _isSignUpInProgress == false,
-                    replacement:
-                        const Center(child: CircularProgressIndicator()),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (!_formKey.currentState!.validate()) {
-                          return;
-                        } else {
-                          userSignUp();
-                        }
-                      },
-                      child: const Icon(Icons.arrow_forward_ios_rounded),
+                GetBuilder<SignupController>(builder: (signupController) {
+                  return SizedBox(
+                    width: double.infinity,
+                    child: Visibility(
+                      visible: signupController.isSignUpInProgress == false,
+                      replacement:
+                          const Center(child: CircularProgressIndicator()),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (!_formKey.currentState!.validate()) {
+                            return;
+                          } else {
+                            signupController
+                                .userSignUp(
+                              _emailTEController.text.trim(),
+                              _firstNameTEController.text.trim(),
+                              _lastNameTEController.text.trim(),
+                              _mobileTEController.text.trim(),
+                              _passwordTEController.text,
+                            )
+                                .then((result) {
+                              if (result == true) {
+                                _emailTEController.clear();
+                                _firstNameTEController.clear();
+                                _lastNameTEController.clear();
+                                _mobileTEController.clear();
+                                _passwordTEController.clear();
+                                Get.snackbar(
+                                  'Success',
+                                  'Registration success!',
+                                );
+                              }else{
+                                Get.snackbar(
+                                  'Failed',
+                                  'Registration failed!',
+                                );
+                              }
+                            });
+                          }
+                        },
+                        child: const Icon(Icons.arrow_forward_ios_rounded),
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                }),
                 const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -188,7 +163,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                     TextButton(
                       onPressed: () {
-                        Navigator.pop(context);
+                        Get.back();
                       },
                       child: const Text("Sign in"),
                     ),
