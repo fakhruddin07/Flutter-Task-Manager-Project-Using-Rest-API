@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:task_manager_project_using_rest_api/ui/screens/new_task_screen.dart';
@@ -86,24 +88,24 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
                                 child: CircularProgressIndicator()),
                             child: ElevatedButton(
                               onPressed: () {
-                                if (_formKey.currentState!.validate()) {
+                                if(!_formKey.currentState!.validate()){
+                                  log(_formKey.currentState!.validate().toString());
                                   return;
-                                } else {
-                                  addNewTaskController
-                                      .addNewTask(
-                                    _titleTEController.text.trim(),
-                                    _descriptionTEController.text.trim(),
-                                  )
-                                      .then((result) {
-                                    if (result == true) {
-                                      _titleTEController.clear();
-                                      _descriptionTEController.clear();
-                                      Get.snackbar(
-                                          "Success", "Task added Successfully");
-                                      Get.offAll(const NewTaskScreen());
-                                    }
-                                  });
                                 }
+                                addNewTaskController
+                                    .addNewTask(
+                                  _titleTEController.text.trim(),
+                                  _descriptionTEController.text.trim(),
+                                )
+                                    .then((result) {
+                                  if (result) {
+                                    _titleTEController.clear();
+                                    _descriptionTEController.clear();
+                                    Get.snackbar(
+                                        "Success", "Task added Successfully");
+                                    Get.offAll(const NewTaskScreen());
+                                  }
+                                });
                               },
                               child:
                                   const Icon(Icons.arrow_forward_ios_rounded),
