@@ -1,69 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager_project_using_rest_api/data/models/network_response.dart';
-import 'package:task_manager_project_using_rest_api/data/services/network_caller.dart';
-import 'package:task_manager_project_using_rest_api/data/utility/urls.dart';
-
-import 'login_screen.dart';
+import 'package:get/get.dart';
+import 'package:task_manager_project_using_rest_api/ui/state_manager/reset_password_controller.dart';
 import '../../../widgets/screen_background.dart';
+import 'login_screen.dart';
 
-class ResetPasswordScreen extends StatefulWidget {
+class ResetPasswordScreen extends StatelessWidget {
   final String email;
   final String otp;
-  const ResetPasswordScreen(
-      {super.key, required this.email, required this.otp});
+  ResetPasswordScreen({super.key, required this.email, required this.otp});
 
-  @override
-  State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
-}
-
-class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final TextEditingController _passwordTEController = TextEditingController();
+
   final TextEditingController _confirmPasswordTEController =
       TextEditingController();
-  bool _setPasswordInProgress = false;
 
   final GlobalKey<FormState> _formKeys = GlobalKey<FormState>();
-
-  Future<void> resetPassword() async {
-    _setPasswordInProgress = true;
-    if (mounted) {
-      setState(() {});
-    }
-
-    Map<String, dynamic> requestBody = {
-      "email": widget.email,
-      "OTP": widget.otp,
-      "password": _passwordTEController.text
-    };
-
-    NetworkResponse response =
-        await NetworkCaller().postRequest(Urls.resetPassword, requestBody);
-
-    _setPasswordInProgress = false;
-    if (mounted) {
-      setState(() {});
-    }
-
-    if (response.isSuccess) {
-      if (mounted) {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const LoginScreen(),
-          ),
-          (route) => false,
-        );
-      }
-    } else {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Reset password has been failed!'),
-          ),
-        );
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -120,23 +71,43 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   },
                 ),
                 const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  child: Visibility(
-                    visible: _setPasswordInProgress == false,
-                    replacement:
-                        const Center(child: CircularProgressIndicator()),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if(!_formKeys.currentState!.validate()){
-                          return;
-                        }
-                        resetPassword();
-                      },
-                      child: const Text("Confirm"),
+                GetBuilder<ResetPasswordController>(
+                    builder: (resetPasswordController) {
+                  return SizedBox(
+                    width: double.infinity,
+                    child: Visibility(
+                      visible: resetPasswordController.setPasswordInProgress ==
+                          false,
+                      replacement:
+                          const Center(child: CircularProgressIndicator()),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (!_formKeys.currentState!.validate()) {
+                            return;
+                          }
+                          resetPasswordController
+                              .resetPassword(
+                                  email, otp, _passwordTEController.text)
+                              .then((result) {
+                            if (result == true) {
+                              Get.snackbar(
+                                'Success',
+                                'Password reset successful!',
+                              );
+                              Get.offAll(() => const LoginScreen());
+                            }else{
+                              Get.snackbar(
+                                'Failed!',
+                                'Password reset failed',
+                              );
+                            }
+                          });
+                        },
+                        child: const Text("Confirm"),
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                }),
                 const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

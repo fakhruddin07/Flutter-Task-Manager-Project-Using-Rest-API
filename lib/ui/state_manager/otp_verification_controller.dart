@@ -21,26 +21,8 @@ class OtpVerificationController extends GetxController{
 
     if (response.isSuccess) {
       return true;
-      /*if (mounted) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ResetPasswordScreen(
-              email: widget.email,
-              otp: _otpTEController.text,
-            ),
-          ),
-        );
-      }*/
     } else {
       return false;
-      /*if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('OTP verification has been failed!'),
-          ),
-        );
-      }*/
     }
   }
 }
