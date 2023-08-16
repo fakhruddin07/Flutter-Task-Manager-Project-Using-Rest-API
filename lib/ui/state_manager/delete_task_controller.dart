@@ -6,6 +6,7 @@ import '../../data/services/network_caller.dart';
 import '../../data/utility/urls.dart';
 
 class DeleteTaskController extends GetxController {
+
   final GetNewTaskController _getNewTaskController =
       Get.find<GetNewTaskController>();
 

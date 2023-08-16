@@ -113,9 +113,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                                     .taskListModel.data![index]);
                               },
                               onDeleteTap: () {
-                                _deleteTaskController.deleteTask(
-                                    _getNewTaskController
-                                        .taskListModel.data![index].sId!);
+                                deleteAlert(index);
                               },
                             );
                           },
@@ -148,4 +146,61 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
       },
     );
   }
+
+  void deleteAlert(int index){
+    Get.dialog(
+      AlertDialog(
+        title: const Text(
+          'Delete Alert',
+          style: TextStyle(
+            color: Colors.red,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: const Text(
+          "Do you want to delete this item?",
+          style: TextStyle(
+            color: Colors.black,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Get.back();
+            },
+            child: const Text('No'),
+          ),
+          TextButton(
+            onPressed: () {
+              Get.back();
+              _deleteTaskController.deleteTask(
+                  _getNewTaskController
+                      .taskListModel.data![index].sId!)
+                  .then((value) {
+                if (value) {
+                  Get.snackbar(
+                    'Success',
+                    'Task deletion successful!',
+                    backgroundColor: Colors.green,
+                    colorText: Colors.white,
+                    borderRadius: 10,
+                  );
+                } else {
+                  Get.snackbar(
+                    'Failed',
+                    'Task deletion failed!',
+                    backgroundColor: Colors.red,
+                    colorText: Colors.white,
+                    borderRadius: 10,
+                  );
+                }
+              });
+            },
+            child: const Text('Yes'),
+          ),
+        ],
+      ),
+    );
+  }
+
 }
